@@ -37,7 +37,7 @@ LIBS		=
 SRCDIR		= src
 
 OBJECTS		= \
-	$(OBJDIR)/gmsec_Kafka.o \
+	$(OBJDIR)/gmsec_kafka.o \
 	$(OBJDIR)/KafkaConnection.o \
 	$(OBJDIR)/KafkaMessage.o
 
