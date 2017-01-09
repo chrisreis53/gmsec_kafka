@@ -12,33 +12,33 @@
 
 
 
-/* @file gmsec_void.h
+/* @file gmsec_kafka.h
  *  This file provides a template for implementing a middleware wrapper.
  */
 
-#include <gmsec_void.h>
+#include <gmsec_kafka.h>
 
 #include <gmsec/internal/Log.h>
 #include <gmsec/internal/StatusException.h>
 
-#include <VoidConnection.h>
+#include <KafkaConnection.h>
 
 
 using namespace gmsec;
 using namespace gmsec::util;
 
 
-GMSEC_VOID_API Status *CreateConnection(Config *cfg, Connection **conn)
+GMSEC_KAFKA_API Status *CreateConnection(Config *cfg, Connection **conn)
 {
 	static Status result;
 
 	result.ReSet();
 
-	LOG_DEBUG << "gmsec_void:CreateConnection(" << cfg << ", " << conn << ")";
+	LOG_DEBUG << "gmsec_kafka:CreateConnection(" << cfg << ", " << conn << ")";
 
 	try
 	{
-		VoidConnection * tmp = new VoidConnection(cfg);
+		KafkaConnection * tmp = new KafkaConnection(cfg);
 		*conn = tmp->createExternal();
 	}
 	catch (gmsec::internal::StatusException &se)
@@ -46,20 +46,19 @@ GMSEC_VOID_API Status *CreateConnection(Config *cfg, Connection **conn)
 		result = se;
 	}
 
-	LOG_DEBUG << "gmsec_void: *conn=" << *conn;
+	LOG_DEBUG << "gmsec_kafka: *conn=" << *conn;
 
 	return &result;
 }
 
 
-GMSEC_VOID_API void DestroyConnection(Connection *conn)
+GMSEC_KAFKA_API void DestroyConnection(Connection *conn)
 {
-	LOG_DEBUG << "gmsec_void:DestroyConnection(" << conn << ')';
+	LOG_DEBUG << "gmsec_kafka:DestroyConnection(" << conn << ')';
 
 	if (conn)
 		gmsec::internal::ConnectionBuddy::destroy(conn);
 }
 
 
-//	EOF	gmsec_void.cpp
-
+//	EOF	gmsec_kafka.cpp

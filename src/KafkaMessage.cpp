@@ -12,11 +12,11 @@
 
 
 
-/* @file VoidMessage.cpp
+/* @file KafkaMessage.cpp
  *  This file provides a template for implementing a middleware wrapper.
  */
 
-#include <VoidMessage.h>
+#include <KafkaMessage.h>
 
 #include <gmsec/internal/Log.h>
 
@@ -24,51 +24,51 @@
 using namespace gmsec;
 using namespace gmsec::util;
 
-VoidMessage::VoidMessage()
+KafkaMessage::KafkaMessage()
 {
-	LOG_VERBOSE << "VoidMessage::VoidMessage()";
+	LOG_VERBOSE << "KafkaMessage::KafkaMessage()";
 }
 
 
-VoidMessage::~VoidMessage()
+KafkaMessage::~KafkaMessage()
 {
-	LOG_VERBOSE << "VoidMessage::~VoidMessage()";
+	LOG_VERBOSE << "KafkaMessage::~KafkaMessage()";
 }
 
 
 #ifdef SUBCLASS_BASEMESSAGE
 
-bool VoidMessage::isValid()
+bool KafkaMessage::isValid()
 {
-	LOG_VERBOSE << "VoidMessage::isValid()";
+	LOG_VERBOSE << "KafkaMessage::isValid()";
 
 	return (true);
 }
 
 
-Status VoidMessage::SetKind(GMSEC_MSG_KIND kind)
+Status KafkaMessage::SetKind(GMSEC_MSG_KIND kind)
 {
 	Status result;
 
-	LOG_VERBOSE << "VoidMessage::mwSetKind(" << kind << ')';
+	LOG_VERBOSE << "KafkaMessage::mwSetKind(" << kind << ')';
 
 	mType = (size_t) kind;
 	switch (kind)
 	{
 	case GMSEC_MSG_UNSET:
-		printf("gmsec_void		Not Specified\n");
+		printf("gmsec_kafka		Not Specified\n");
 		break;
 	case GMSEC_MSG_PUBLISH:
-		printf("gmsec_void		Proxy - non-blocking\n");
+		printf("gmsec_kafka		Proxy - non-blocking\n");
 		break;
 	case GMSEC_MSG_REQUEST:
-		printf("gmsec_void		Send()/Receive() - blocking\n");
+		printf("gmsec_kafka		Send()/Receive() - blocking\n");
 		break;
 	case GMSEC_MSG_REPLY:
-		printf("gmsec_void		Reply() - non/un-blocking\n");
+		printf("gmsec_kafka		Reply() - non/un-blocking\n");
 		break;
 	default:
-		printf("gmsec_void		Error\n");
+		printf("gmsec_kafka		Error\n");
 		result.Set(
 		    GMSEC_STATUS_MESSAGE_ERROR,
 		    GMSEC_UNKNOWN_MSG_TYPE,
@@ -80,11 +80,11 @@ Status VoidMessage::SetKind(GMSEC_MSG_KIND kind)
 }
 
 
-Status VoidMessage::GetKind(GMSEC_MSG_KIND &kind)
+Status KafkaMessage::GetKind(GMSEC_MSG_KIND &kind)
 {
 	Status result;
 
-	LOG_DEBUG << "VoidMessage::GetKind(" << &kind << ')';
+	LOG_DEBUG << "KafkaMessage::GetKind(" << &kind << ')';
 
 	kind = mType;
 
@@ -92,22 +92,22 @@ Status VoidMessage::GetKind(GMSEC_MSG_KIND &kind)
 }
 
 
-Status VoidMessage::mwSetSubject(const char *subject)
+Status KafkaMessage::mwSetSubject(const char *subject)
 {
 	Status result;
 
-	LOG_DEBUG << "VoidMessage::mwSetSubject("
+	LOG_DEBUG << "KafkaMessage::mwSetSubject("
 	       (subject ? subject : "[null]") << ')';
 
 	return result;
 }
 
 
-Status VoidMessage::GetSubject(const char *&subject)
+Status KafkaMessage::GetSubject(const char *&subject)
 {
 	Status result;
 
-	LOG_DEBUG << "VoidConnection::GetSubject(" << &subject << ')';
+	LOG_DEBUG << "KafkaConnection::GetSubject(" << &subject << ')';
 
 	subject = mName;
 
@@ -115,9 +115,9 @@ Status VoidMessage::GetSubject(const char *&subject)
 }
 
 
-bool VoidMessage::ProcessConfigValue(const char *name, const char *value)
+bool KafkaMessage::ProcessConfigValue(const char *name, const char *value)
 {
-	LOG_DEBUG << "VoidConnection::ProcessConfigValue(name="
+	LOG_DEBUG << "KafkaConnection::ProcessConfigValue(name="
 			<< (name ? name : "[null]")
 			<< ", value=" << (value ? value : "[null]");
 
@@ -125,32 +125,32 @@ bool VoidMessage::ProcessConfigValue(const char *name, const char *value)
 }
 
 
-Status VoidMessage::ClearFields()
+Status KafkaMessage::ClearFields()
 {
 	Status result;
 
-	LOG_DEBUG << "VoidConnection::ClearFields()";
+	LOG_DEBUG << "KafkaConnection::ClearFields()";
 
 	return result;
 }
 
 
-Status VoidMessage::ClearField(const char *name)
+Status KafkaMessage::ClearField(const char *name)
 {
 	Status result;
 
-	LOG_DEBUG << "VoidConnection::ClearField(name="
+	LOG_DEBUG << "KafkaConnection::ClearField(name="
 			<< (name ? name : "[null]") << ')';
 
 	return result;
 }
 
 
-Status VoidMessage::GetField(const char *name, Field &field)
+Status KafkaMessage::GetField(const char *name, Field &field)
 {
 	Status result;
 
-	LOG_DEBUG << "VoidConnection::GetField(name="
+	LOG_DEBUG << "KafkaConnection::GetField(name="
 			<< (name ? name : "[null]")
 			<< ", field=" << &field << ')';
 
@@ -158,31 +158,31 @@ Status VoidMessage::GetField(const char *name, Field &field)
 }
 
 
-Status VoidMessage::GetFieldCount(GMSEC_I32 &count)
+Status KafkaMessage::GetFieldCount(GMSEC_I32 &count)
 {
 	Status result;
 
-	LOG_DEBUG << "VoidConnection::GetFieldCount(@count=" << &count << ')';
+	LOG_DEBUG << "KafkaConnection::GetFieldCount(@count=" << &count << ')';
 
 	return result;
 }
 
 
-Status VoidMessage::GetFirstField(Field &field)
+Status KafkaMessage::GetFirstField(Field &field)
 {
 	Status result;
 
-	LOG_DEBUG << "VoidConnection::GetFirstField(@field=" << &field << ')';
+	LOG_DEBUG << "KafkaConnection::GetFirstField(@field=" << &field << ')';
 
 	return result;
 }
 
 
-Status VoidMessage::GetNextField(Field &field)
+Status KafkaMessage::GetNextField(Field &field)
 {
 	Status result;
 
-	LOG_DEBUG << "VoidConnection::GetNextField(@field=" << &field << ')';
+	LOG_DEBUG << "KafkaConnection::GetNextField(@field=" << &field << ')';
 	result.Set(GMSEC_STATUS_MESSAGE_ERROR,
 		GMSEC_FIELDS_END_REACHED,
 		"Nominal end-of-fields");
@@ -191,11 +191,11 @@ Status VoidMessage::GetNextField(Field &field)
 }
 
 
-Status VoidMessage::GetMSGSize(unsigned long &size)
+Status KafkaMessage::GetMSGSize(unsigned long &size)
 {
 	Status result;
 
-	LOG_DEBUG << "VoidConnection::GetMSGSize(@size=" << &size << ')';
+	LOG_DEBUG << "KafkaConnection::GetMSGSize(@size=" << &size << ')';
 
 	return result;
 }
@@ -203,5 +203,4 @@ Status VoidMessage::GetMSGSize(unsigned long &size)
 #endif /* SUBCLASS_BASEMESSAGE */
 
 
-//	EOF	VoidMessage.cpp
-
+//	EOF	KafkaMessage.cpp

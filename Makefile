@@ -1,4 +1,4 @@
- 
+
 # Copyright 2007-2016 United States Government as represented by the
 # Administrator of The National Aeronautics and Space Administration.
 # No copyright is claimed in the United States under Title 17, U.S. Code.
@@ -16,7 +16,7 @@ GMSEC_HOME	= ../..
 include $(GMSEC_HOME)/config/$(GMSEC_PLATFORM)
 
 
-LIBROOTNAME	= gmsec_void
+LIBROOTNAME	= gmsec_kafka
 
 TARGET		= lib$(LIBROOTNAME).$(SHLIB_EXT)
 
@@ -37,9 +37,9 @@ LIBS		=
 SRCDIR		= src
 
 OBJECTS		= \
-	$(OBJDIR)/gmsec_void.o \
-	$(OBJDIR)/VoidConnection.o \
-	$(OBJDIR)/VoidMessage.o
+	$(OBJDIR)/gmsec_Kafka.o \
+	$(OBJDIR)/KafkaConnection.o \
+	$(OBJDIR)/KafkaMessage.o
 
 
 # default: clean library
@@ -56,4 +56,3 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
-

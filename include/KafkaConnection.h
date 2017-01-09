@@ -12,25 +12,25 @@
 
 
 
-/* @file VoidConnection.h
+/* @file KafkaConnection.h
  *  This file provides a template for implementing a middleware wrapper.
  */
 
-#ifndef _VoidConnection_h_
-#define _VoidConnection_h_
+#ifndef _KafkaConnection_h_
+#define _KafkaConnection_h_
 
-#include <gmsec_void.h>
+#include <gmsec_kafka.h>
 
 #include <gmsec/internal/BaseConnection.h>
 
-#include <VoidMessage.h>
+#include <KafkaMessage.h>
 
 
 /** @class VoidConnection
  * This class provides a sample (dummy) implementation of the
  * BaseConnection abstract class.
 */
-class GMSEC_VOID_API VoidConnection
+class GMSEC_KAFKA_API KafkaConnection
 		:	public gmsec::internal::BaseConnection
 {
 private:
@@ -40,8 +40,8 @@ public:
 	/** @fn VoidConnection(gmsec::Config *cfg)
 	* Standard constructor that requires a config
 	*/
-	VoidConnection(gmsec::Config *cfg);
-	virtual ~VoidConnection();
+	KafkaConnection(gmsec::Config *cfg);
+	virtual ~KafkaConnection();
 
 	/** @fn CloneMessage( gmsec::Message *in, gmsec::Message *&out )
 	* This function copies a message without knowing what type it is
@@ -58,7 +58,7 @@ public:
 	*/
 	virtual const char * CALL_TYPE GetLibraryRootName()
 	{
-		return "gmsec_void";
+		return "gmsec_kafka";
 	}
 
 	/** @fn mwConnect()
@@ -87,7 +87,7 @@ public:
 	virtual gmsec::Status CALL_TYPE mwCreateMessage(const char *subject, GMSEC_MSG_KIND msgKind, gmsec::Message *&msg);
 
 	/** @fn DestroyMessage(gmsec::Message *msg)
-	* destroy an void message
+	* destroy a kafka message
 	*/
 	virtual gmsec::Status CALL_TYPE DestroyMessage(gmsec::Message *msg);
 

@@ -12,11 +12,11 @@
 
 
 
-/* @file VoidConnection.cpp
+/* @file KafkaConnection.cpp
  *  This file provides a template for implementing a middleware wrapper.
  */
 
-#include <VoidConnection.h>
+#include <KafkaConnection.h>
 
 #include <gmsec/internal/rawbuf.h>
 
@@ -27,7 +27,7 @@ using namespace gmsec::util;
 using namespace std;
 
 
-VoidConnection::VoidConnection(Config *cfg)
+KafkaConnection::KafkaConnection(Config *cfg)
 		:
 		BaseConnection(cfg)
 {
@@ -37,7 +37,7 @@ VoidConnection::VoidConnection(Config *cfg)
 	rawbuf buffer(raw, sizeof(raw));
 	ostream os(&buffer);
 
-	os << "VoidConnection::VoidConnection:";
+	os << "KafkaConnection::KafkaConnection:";
 
 	if (NULL != cfg)
 	{
@@ -56,69 +56,69 @@ VoidConnection::VoidConnection(Config *cfg)
 }
 
 
-VoidConnection::~VoidConnection()
+KafkaConnection::~KafkaConnection()
 {
-	LOG_DEBUG << "gmsec_void:VoidConnection::~VoidConnection()";
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::~KafkaConnection()";
 }
 
 
-const char *VoidConnection::GetLibraryVersion()
+const char *KafkaConnection::GetLibraryVersion()
 {
 	return "v0.2.1";
 }
 
 
-Status VoidConnection::mwConnect()
+Status KafkaConnection::mwConnect()
 {
 	Status result;
 
-	LOG_DEBUG << "gmsec_void:VoidConnection::mwConnect()";
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwConnect()";
 
 	return result;
 }
 
 
-Status VoidConnection::mwDisconnect()
+Status KafkaConnection::mwDisconnect()
 {
 	Status result;
 
-	LOG_DEBUG << "gmsec_void:VoidConnection::mwDisconnect()";
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwDisconnect()";
 
 	return result;
 }
 
 
-Status VoidConnection::mwSubscribe(const char *subject, const gmsec::Config &config)
+Status KafkaConnection::mwSubscribe(const char *subject, const gmsec::Config &config)
 {
 	Status result;
 
-	LOG_DEBUG << "gmsec_void:VoidConnection::mwSubscribe(" << subject << ')';
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwSubscribe(" << subject << ')';
 
 	return result;
 }
 
 
-Status VoidConnection::mwUnSubscribe(const char *subject)
+Status KafkaConnection::mwUnSubscribe(const char *subject)
 {
 	Status result;
 
-	LOG_DEBUG << "gmsec_void:VoidConnection::mwUnSubscribe(" << subject << ')';
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwUnSubscribe(" << subject << ')';
 
 	return result;
 }
 
 
-Status VoidConnection::mwCreateMessage(const char *subject,
+Status KafkaConnection::mwCreateMessage(const char *subject,
 		GMSEC_MSG_KIND kind, Message *&msg)
 {
 	Status result;
 
-	LOG_DEBUG << "gmsec_void:VoidConnection::mwCreateMessage("
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwCreateMessage("
 			<< (subject ? subject : "[null]")
 			<< ", kind=" << kind << ", msg=" << msg << ')';
 
 	{
-		VoidMessage * tmp = new VoidMessage();
+		KafkaMessage * tmp = new KafkaMessage();
 		tmp->SetSubject(subject);
 		tmp->SetKind(kind);
 		msg = tmp->createExternal();
@@ -129,64 +129,64 @@ Status VoidConnection::mwCreateMessage(const char *subject,
 		result.Set(
 		    GMSEC_STATUS_MESSAGE_ERROR,
 		    GMSEC_INVALID_MESSAGE,
-		    "VoidMessage object not created");
+		    "KafkaMessage object not created");
 		LOG_WARNING << result.Get();
 	}
 
-	LOG_DEBUG << "gmsec_void:VoidConnection::mwCreateMessage => " << msg;
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwCreateMessage => " << msg;
 
 	return result;
 }
 
 
 #if 0
-Status VoidConnection::DestroyMessage(Message *msg)
+Status KafkaConnection::DestroyMessage(Message *msg)
 {
 	Status result;
 
-	LOG_INFO << "gmsec_void:VoidConnection::DestroyMessage(" << msg << ')';
+	LOG_INFO << "gmsec_kafka:KafkaConnection::DestroyMessage(" << msg << ')';
 
 	return result;
 }
 #endif
 
 
-Status VoidConnection::mwPublish(Message *msg, const gmsec::Config &config)
+Status KafkaConnection::mwPublish(Message *msg, const gmsec::Config &config)
 {
 	Status result;
 
-	LOG_DEBUG << "gmsec_void:VoidConnection::Publish(" << msg << ')';
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::Publish(" << msg << ')';
 
 	return result;
 }
 
 
-Status VoidConnection::mwRequest(Message *request, std::string &id)
+Status KafkaConnection::mwRequest(Message *request, std::string &id)
 {
 	Status result;
 
-	LOG_DEBUG << "gmsec_void:VoidConnection::mwRequest(" << request << ')';
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwRequest(" << request << ')';
 
 	return result;
 }
 
 
-Status VoidConnection::mwReply(Message *request, Message *reply)
+Status KafkaConnection::mwReply(Message *request, Message *reply)
 {
 	Status result;
 
-	LOG_DEBUG << "gmsec_void:VoidConnection::mwReply(request=" << request
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwReply(request=" << request
 			<< ", reply=" << reply << ')';
 
 	return result;
 }
 
 
-Status VoidConnection::mwGetNextMsg(Message *&msg, GMSEC_I32 timeout)
+Status KafkaConnection::mwGetNextMsg(Message *&msg, GMSEC_I32 timeout)
 {
 	Status result;
 
-	LOG_DEBUG << "gmsec_void:VoidConnection::mwGetNextMsg(msg=" << msg
+	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwGetNextMsg(msg=" << msg
 			<< ", timeout=" << timeout << ')';
 
 	msg = NULL;
@@ -198,5 +198,4 @@ Status VoidConnection::mwGetNextMsg(Message *&msg, GMSEC_I32 timeout)
 }
 
 
-//	EOF VoidConnection.cpp
-
+//	EOF KafkaConnection.cpp

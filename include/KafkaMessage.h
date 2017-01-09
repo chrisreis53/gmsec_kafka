@@ -12,34 +12,34 @@
 
 
 
-/* @file VoidMessage.h
+/* @file KafkaMessage.h
  *  This file provides a template for implementing a middleware wrapper.
  */
 
-#ifndef _VoidMessage_h_
-#define _VoidMessage_h_
+#ifndef _KafkaMessage_h_
+#define _KafkaMessage_h_
 
-#include <gmsec_void.h>
+#include <gmsec_kafka.h>
 
 #include <gmsec/internal/SimpleMessage.h>
 
 
-/** @class VoidMessage
+/** @class KafkaMessage
 * This class implements the Message abstract base class to support
-* Void middleware.
+* Kafka middleware.
 */
-class GMSEC_VOID_API VoidMessage
+class GMSEC_KAFKA_API KafkaMessage
 		:	public gmsec::internal::SimpleMessage
 {
 public:
-	/** @fn VoidMessage(subject, type)
-	* Standard constructor that takes a void message pointer
+	/** @fn KafkaMessage(subject, type)
+	* Standard constructor that takes a kafka message pointer
 	*/
-	VoidMessage();
-	virtual ~VoidMessage();
+	KafkaMessage();
+	virtual ~KafkaMessage();
 
 	/** @fn getCMessagePtr()
-	* Access to the unlying void native message pointer.
+	* Access to the unlying kafka native message pointer.
 	*/
 	//	CMessage * CALL_TYPE getCMessagePtr() { return NULL; }
 
@@ -48,7 +48,7 @@ public:
 	*/
 	virtual const char * CALL_TYPE GetLibraryRootName()
 	{
-		return "gmsec_void";
+		return "gmsec_kafka";
 	}
 
 #ifdef SUBCLASS_BASEMESSAGE
@@ -131,4 +131,4 @@ public:
 
 };
 
-#endif	// VoidMessage_h
+#endif	// KafkaMessage_h

@@ -12,24 +12,24 @@
 
 
 
-/* @file gmsec_void.h
+/* @file gmsec_kafka.h
  *  This file provides a template for implementing a middleware wrapper.
  */
 
-#ifndef _gmsec_void_h_
-#define _gmsec_void_h_
+#ifndef _gmsec_kafka_h_
+#define _gmsec_kafka_h_
 
 #ifdef WIN32
-#ifdef GMSEC_VOID_EXPORTS
-#define GMSEC_VOID_API __declspec(dllexport)
+#ifdef GMSEC_KAFKA_EXPORTS
+#define GMSEC_KAFKA_API __declspec(dllexport)
 #else
-#define GMSEC_VOID_API __declspec(dllimport)
+#define GMSEC_KAFKA_API __declspec(dllimport)
 #endif
 /* disable invalid STL waring for windows targets */
 #pragma warning ( disable : 4251 )
 #pragma warning ( disable : 4786 )
 #else	// All other platforms make this macro invisible
-#define GMSEC_VOID_API
+#define GMSEC_KAFKA_API
 #endif
 
 #include <gmsec_cpp.h>
@@ -45,7 +45,7 @@ extern "C"
  *
  * @sa ConnectionFactory::Create(Config *cfg, Connection *&conn)
  */
-GMSEC_VOID_API gmsec::Status
+GMSEC_KAFKA_API gmsec::Status
 *CreateConnection(gmsec::Config *cfg, gmsec::Connection **conn);
 
 /** @fn DestroyConnection(Connection *conn)
@@ -54,7 +54,7 @@ GMSEC_VOID_API gmsec::Status
  *
  * @sa ConnectionFactory::Destroy(Connection *conn)
  */
-GMSEC_VOID_API void
+GMSEC_KAFKA_API void
 DestroyConnection(gmsec::Connection *conn);
 
 #ifdef __cplusplus
@@ -62,4 +62,3 @@ DestroyConnection(gmsec::Connection *conn);
 #endif
 
 #endif /* gmsec_void_h */
-
