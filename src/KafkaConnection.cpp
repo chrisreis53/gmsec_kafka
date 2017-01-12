@@ -15,187 +15,87 @@
 /* @file KafkaConnection.cpp
  *  This file provides a template for implementing a middleware wrapper.
  */
+#include <gmsec_kafka.h>
 
 #include <KafkaConnection.h>
 
-#include <gmsec/internal/rawbuf.h>
+#include <gmsec4/internal/InternalConnection.h>
+#include <gmsec4/internal/MessageBuddy.h>
+#include <gmsec4/internal/Rawbuf.h>
+
+#include <gmsec4/Connection.h>
+#include <gmsec4/Errors.h>
+
+#include <gmsec4/util/Buffer.h>
+#include <gmsec4/util/Condition.h>
+#include <gmsec4/util/Log.h>
+#include <gmsec4/util/Mutex.h>
+
+#include <gmsec_version.h>
 
 
-using namespace gmsec;
-using namespace gmsec::util;
+using namespace gmsec::api;
+using namespace gmsec::api::internal;
+using namespace gmsec::api::util;
 
 using namespace std;
 
 
-KafkaConnection::KafkaConnection(Config *cfg)
-		:
-		BaseConnection(cfg)
+KafkaConnection::KafkaConnection(const Config& config)
+	:
+	mw_test(false)
 {
-	Status result;
-
-	char raw[4000];
-	rawbuf buffer(raw, sizeof(raw));
-	ostream os(&buffer);
-
-	os << "KafkaConnection::KafkaConnection:";
-
-	if (NULL != cfg)
-	{
-		const char * key;
-		const char * value;
-		for (result = cfg->GetFirst(key, value);
-		        GMSEC_STATUS_NO_ERROR != result.GetCode();
-		        result = cfg->GetNext(key, value))
-		{
-			os << "\n\t(" << key << ',' << value << ')';
-		}
-	}
-	os << ends;
-
-	LOG_DEBUG << raw;
+	GMSEC_DEBUG << "Connection" << '\n';
 }
-
 
 KafkaConnection::~KafkaConnection()
 {
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::~KafkaConnection()";
+	GMSEC_DEBUG << "~Connection" << '\n';
 }
 
-
-const char *KafkaConnection::GetLibraryVersion()
+const char* KafkaConnection::getLibraryVersion()
 {
-	return "v0.2.1";
+	return "v0.10.1";
 }
 
-
-Status KafkaConnection::mwConnect()
+void KafkaConnection::mwConnect()
 {
-	Status result;
-
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwConnect()";
-
-	return result;
+	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwConnect()";
 }
 
-
-Status KafkaConnection::mwDisconnect()
+void KafkaConnection::mwDisconnect()
 {
-	Status result;
-
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwDisconnect()";
-
-	return result;
+	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwDisconnect()";
 }
 
-
-Status KafkaConnection::mwSubscribe(const char *subject, const gmsec::Config &config)
+void KafkaConnection::mwSubscribe(const char* subject, const Config& config)
 {
-	Status result;
-
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwSubscribe(" << subject << ')';
-
-	return result;
+	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwSubscribe(" << subject << ')';
 }
 
-
-Status KafkaConnection::mwUnSubscribe(const char *subject)
+void KafkaConnection::mwUnsubscribe(const char *subject)
 {
-	Status result;
-
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwUnSubscribe(" << subject << ')';
-
-	return result;
+	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwUnSubscribe(" << subject << ')';
 }
 
-
-Status KafkaConnection::mwCreateMessage(const char *subject,
-		GMSEC_MSG_KIND kind, Message *&msg)
+void KafkaConnection::mwPublish(const Message& message, const Config& config)
 {
-	Status result;
-
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwCreateMessage("
-			<< (subject ? subject : "[null]")
-			<< ", kind=" << kind << ", msg=" << msg << ')';
-
-	{
-		KafkaMessage * tmp = new KafkaMessage();
-		tmp->SetSubject(subject);
-		tmp->SetKind(kind);
-		msg = tmp->createExternal();
-	}
-
-	if (!msg)
-	{
-		result.Set(
-		    GMSEC_STATUS_MESSAGE_ERROR,
-		    GMSEC_INVALID_MESSAGE,
-		    "KafkaMessage object not created");
-		LOG_WARNING << result.Get();
-	}
-
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwCreateMessage => " << msg;
-
-	return result;
+	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::Publish(things)";
 }
 
-
-#if 0
-Status KafkaConnection::DestroyMessage(Message *msg)
+void KafkaConnection::mwRequest(const Message& message, std::string& id)
 {
-	Status result;
-
-	LOG_INFO << "gmsec_kafka:KafkaConnection::DestroyMessage(" << msg << ')';
-
-	return result;
+	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwRequest("<< ')';
 }
-#endif
 
-
-Status KafkaConnection::mwPublish(Message *msg, const gmsec::Config &config)
+void KafkaConnection::mwReply(const Message& request, const Message& reply)
 {
-	Status result;
-
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::Publish(" << msg << ')';
-
-	return result;
+	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwReply(request=" << ", reply=" << ')';
 }
 
-
-Status KafkaConnection::mwRequest(Message *request, std::string &id)
+void KafkaConnection::mwReceive(Message*& message, GMSEC_I32 timeout)
 {
-	Status result;
-
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwRequest(" << request << ')';
-
-	return result;
+	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwReceive";
 }
-
-
-Status KafkaConnection::mwReply(Message *request, Message *reply)
-{
-	Status result;
-
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwReply(request=" << request
-			<< ", reply=" << reply << ')';
-
-	return result;
-}
-
-
-Status KafkaConnection::mwGetNextMsg(Message *&msg, GMSEC_I32 timeout)
-{
-	Status result;
-
-	LOG_DEBUG << "gmsec_kafka:KafkaConnection::mwGetNextMsg(msg=" << msg
-			<< ", timeout=" << timeout << ')';
-
-	msg = NULL;
-	result.Set(GMSEC_STATUS_CONNECTION_ERROR,
-			GMSEC_NO_MESSAGE_AVAILABLE,
-			"Nothing left.");
-
-	return result;
-}
-
 
 //	EOF KafkaConnection.cpp

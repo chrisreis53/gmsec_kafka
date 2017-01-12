@@ -21,95 +21,57 @@
 
 #include <gmsec_kafka.h>
 
-#include <gmsec/internal/BaseConnection.h>
+#include <gmsec4_defs.h>
 
-#include <KafkaMessage.h>
+#include <gmsec4/internal/ConnectionInterface.h>
+#include <gmsec4/internal/UniqueFilter.h>
+
+#include <gmsec4/Config.h>
+#include <gmsec4/Message.h>
+
+
+//#include <KafkaMessage.h>
 
 
 /** @class VoidConnection
  * This class provides a sample (dummy) implementation of the
  * BaseConnection abstract class.
 */
-class GMSEC_KAFKA_API KafkaConnection
-		:	public gmsec::internal::BaseConnection
+class GMSEC_KAFKA_API KafkaConnection :	public gmsec::api::internal::ConnectionInterface
 {
 private:
+	bool mw_test;
 
 public:
 
-	/** @fn VoidConnection(gmsec::Config *cfg)
-	* Standard constructor that requires a config
-	*/
-	KafkaConnection(gmsec::Config *cfg);
+	KafkaConnection(const gmsec::api::Config& config);
+
 	virtual ~KafkaConnection();
 
-	/** @fn CloneMessage( gmsec::Message *in, gmsec::Message *&out )
-	* This function copies a message without knowing what type it is
-	*/
-	virtual gmsec::Status CALL_TYPE CloneMessage(gmsec::Message *in, gmsec::Message *&out);
+	virtual const char* CALL_TYPE getLibraryVersion();
 
-	/** @fn GetLibraryVersion()
-	* Retrieve the version of the underlying middleware libraries
-	*/
-	virtual const char * CALL_TYPE GetLibraryVersion();
-
-	/** @fn GetLibraryRootName()
-	* Retrieve the root library name
-	*/
-	virtual const char * CALL_TYPE GetLibraryRootName()
+	virtual const char* CALL_TYPE getLibraryRootName()
 	{
 		return "gmsec_kafka";
 	}
 
-	/** @fn mwConnect()
-	* @brief Establish connection to the server.
-	*/
-	virtual gmsec::Status CALL_TYPE mwConnect();
+	virtual const char* getMWInfo();
 
-	/** @fn mwDisconnect()
-	* @brief End connection to the server.
-	*/
-	virtual gmsec::Status CALL_TYPE mwDisconnect();
+	virtual void CALL_TYPE mwConnect();
 
-	/** @fn mwSubscribe(const char *subject, const gmsec::Config &config)
-	* @brief Subscribe to a subject without a callback
-	*/
-	virtual gmsec::Status CALL_TYPE mwSubscribe(const char *subject, const gmsec::Config &config);
+	virtual void CALL_TYPE mwDisconnect();
 
-	/** @fn mwUnSubscribe(const char *subject)
-	* @brief Unsubscribe from a subject
-	*/
-	virtual gmsec::Status CALL_TYPE mwUnSubscribe(const char *subject);
+	virtual void CALL_TYPE mwSubscribe(const char* subject, const gmsec::api::Config& config);
 
-	/** @fn mwCreateMessage(const char *subject, GMSEC_MSG_KIND msgKind, gmsec::Message *&msg)
-	* @brief Create a middleware specific message.
-	*/
-	virtual gmsec::Status CALL_TYPE mwCreateMessage(const char *subject, GMSEC_MSG_KIND msgKind, gmsec::Message *&msg);
+	virtual void CALL_TYPE mwUnsubscribe(const char* subject);
 
-	/** @fn DestroyMessage(gmsec::Message *msg)
-	* destroy a kafka message
-	*/
-	virtual gmsec::Status CALL_TYPE DestroyMessage(gmsec::Message *msg);
+	virtual void CALL_TYPE mwPublish(const gmsec::api::Message& msg, const gmsec::api::Config& config);
 
-	/** @fn mwPublish(gmsec::Message *msg, const gmsec::Config &config)
-	* @brief Send the message to the middleware.
-	*/
-	virtual gmsec::Status CALL_TYPE mwPublish(gmsec::Message *msg, const gmsec::Config &config);
+	virtual void CALL_TYPE mwRequest(const gmsec::api::Message& request, std::string& id);
 
-	/** @fn mwRequest(gmsec::Message *request, long timeout, gmsec::Message *&reply)
-	* @brief Send a request message to the middleware.
-	*/
-	virtual gmsec::Status CALL_TYPE mwRequest(gmsec::Message *request, std::string &id);
+	virtual void CALL_TYPE mwReply(const gmsec::api::Message& request, const gmsec::api::Message& reply);
 
-	/** @fn mwReply(gmsec::Message *request,gmsec::Message *reply)
-	* @brief Send a reply message to the middleware.
-	*/
-	virtual gmsec::Status CALL_TYPE mwReply(gmsec::Message *request,gmsec::Message *reply);
-
-	/** @fn GetNextMsg(gmsec::Message *&msg, long timeout)
-	* pull the next message off the inbound queue
-	*/
-	virtual gmsec::Status CALL_TYPE mwGetNextMsg(gmsec::Message *&msg, long timeout);
+	virtual void CALL_TYPE mwReceive(gmsec::api::Message*& msg, GMSEC_I32 timeout);
 
 };
 #endif	//	VoidConnection_h
