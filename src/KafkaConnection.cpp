@@ -43,7 +43,8 @@ using namespace std;
 
 KafkaConnection::KafkaConnection(const Config& config)
 	:
-	mw_test(false)
+	mw_test(false),
+	mwInfo("")
 {
 	GMSEC_DEBUG << "Connection" << '\n';
 }
@@ -56,6 +57,16 @@ KafkaConnection::~KafkaConnection()
 const char* KafkaConnection::getLibraryVersion()
 {
 	return "v0.10.1";
+}
+
+const char* KafkaConnection::getMWInfo()
+{
+	if (mwInfo.empty())
+	{
+		mwInfo = getLibraryRootName();
+	}
+
+	return mwInfo.c_str();
 }
 
 void KafkaConnection::mwConnect()

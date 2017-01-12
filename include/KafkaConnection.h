@@ -40,7 +40,8 @@
 class GMSEC_KAFKA_API KafkaConnection :	public gmsec::api::internal::ConnectionInterface
 {
 private:
-	bool mw_test;
+	bool				mw_test;
+	std::string	mwInfo;
 
 public:
 
