@@ -26,7 +26,7 @@ CXXFLAGS	+= $(LOCAL_DEFS) $(LOCAL_INCS)
 
 LIBDIRS		=
 
-LIBS		=
+LIBS		= -lrdkafka -lz -lpthread -lrt
 
 #
 SRCDIR		= src

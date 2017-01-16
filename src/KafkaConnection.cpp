@@ -46,18 +46,18 @@ using namespace std;
  * Called once for each message.
  * See rdkafka.h for more information.
  */
-static void msg_delivered (rd_kafka_t *rk,
-			   void *payload, size_t len,
-			   int error_code,
-			   void *opaque, void *msg_opaque) {
-
-	if (error_code)
-		fprintf(stderr, "%% Message delivery failed: %s\n",
-			rd_kafka_err2str(error_code));
-	else if (!quiet)
-		fprintf(stderr, "%% Message delivered (%zd bytes): %.*s\n", len,
-			(int)len, (const char *)payload);
-}
+// static void msg_delivered (rd_kafka_t *rk,
+// 			   void *payload, size_t len,
+// 			   int error_code,
+// 			   void *opaque, void *msg_opaque) {
+//
+// 	if (error_code)
+// 		fprintf(stderr, "%% Message delivery failed: %s\n",
+// 			rd_kafka_err2str(error_code));
+// 	else if (!quiet)
+// 		fprintf(stderr, "%% Message delivered (%zd bytes): %.*s\n", len,
+// 			(int)len, (const char *)payload);
+// }
 
 KafkaConnection::KafkaConnection(const Config& config)
 	:
