@@ -14,9 +14,13 @@ TARGET		= lib$(LIBROOTNAME).$(SHLIB_EXT)
 
 OBJDIR		= ./src
 
+SUPDIR       = $(SUPPORT)/kafka
+
 LOCAL_DEFS		= -DGMSEC_LIBROOTNAME=$(LIBROOTNAME)
 
-LOCAL_INCS		= -I./include
+LOCAL_INCS   = -I$(GMSEC_HOME)/include \
+                -I$(SUPDIR)/include \
+                -I./include
 
 CXXFLAGS	+= $(LOCAL_DEFS) $(LOCAL_INCS)
 
