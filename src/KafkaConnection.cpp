@@ -31,9 +31,15 @@
 #include <gmsec4/util/Log.h>
 #include <gmsec4/util/Mutex.h>
 
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <cstdio>
+#include <csignal>
+#include <cstring>
+
 #include <gmsec_version.h>
 
-#include <rdkafka.h>
 
 using namespace gmsec::api;
 using namespace gmsec::api::internal;
@@ -41,30 +47,69 @@ using namespace gmsec::api::util;
 
 using namespace std;
 
-/**
- * Message delivery report callback.
- * Called once for each message.
- * See rdkafka.h for more information.
- */
-// static void msg_delivered (rd_kafka_t *rk,
-// 			   void *payload, size_t len,
-// 			   int error_code,
-// 			   void *opaque, void *msg_opaque) {
-//
-// 	if (error_code)
-// 		fprintf(stderr, "%% Message delivery failed: %s\n",
-// 			rd_kafka_err2str(error_code));
-// 	else if (!quiet)
-// 		fprintf(stderr, "%% Message delivered (%zd bytes): %.*s\n", len,
-// 			(int)len, (const char *)payload);
-// }
+static bool run = true;
+static bool exit_eof = false;
+
+static void sigterm (int sig) {
+  run = false;
+}
+
+class ExampleDeliveryReportCb : public RdKafka::DeliveryReportCb {
+ public:
+  void dr_cb (RdKafka::Message &message) {
+    std::cout << "Message delivery for (" << message.len() << " bytes): " <<
+        message.errstr() << '\n';
+    if (message.key())
+      std::cout << "Key: " << *(message.key()) << ";" << '\n';
+  }
+};
 
 KafkaConnection::KafkaConnection(const Config& config)
 	:
 	mw_test(false),
 	mwInfo("")
 {
-	GMSEC_DEBUG << "Connection" << '\n';
+	GMSEC_DEBUG << "Connection test" << '\n';
+
+  std::string brokers = "localhost";
+  std::string errstr;
+  std::string topic_str;
+  std::string mode;
+  std::string debug;
+
+
+  RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+  RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
+
+  ExampleDeliveryReportCb ex_dr_cb;
+
+  conf->set("metadata.broker.list", brokers, errstr);
+  conf->set("dr_cb", &ex_dr_cb, errstr);
+
+  /*
+   * Create producer using accumulated global configuration.
+   */
+  RdKafka::Producer *producer = RdKafka::Producer::create(conf, errstr);
+  if (!producer) {
+    std::cerr << "Failed to create producer: " << errstr << std::endl;
+    exit(1);
+  }
+
+  std::cout << "% Created producer " << producer->name() << std::endl;
+
+  /*
+   * Create topic handle.
+   */
+  RdKafka::Topic *topic = RdKafka::Topic::create(producer, topic_str,
+             tconf, errstr);
+  if (!topic) {
+    std::cerr << "Failed to create topic: " << errstr << std::endl;
+    exit(1);
+  }
+  /*
+   * Publish Message
+   */
+   //RdKafka::ErrorCode resp = producer->produce(topic, partition,
 
 }
 

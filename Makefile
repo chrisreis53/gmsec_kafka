@@ -20,14 +20,11 @@ LOCAL_DEFS		= -DGMSEC_LIBROOTNAME=$(LIBROOTNAME)
 
 LOCAL_INCS   = -I$(GMSEC_HOME)/include \
                 -I$(SUPDIR)/include \
-                -I./include
+                -I./include \
 
 CXXFLAGS	+= $(LOCAL_DEFS) $(LOCAL_INCS)
 
-LIBDIRS		=
-
-LIBS		= -lrdkafka -lz -lpthread -lrt
-
+LDFLAGS   += -L$(SUPDIR)/include -lrdkafka++ -lrdkafka -lpthread -lrt -lz
 #
 SRCDIR		= src
 
@@ -47,7 +44,7 @@ clean:
 	$(RM) $(BINDIR)/$(TARGET)
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
-	$(DLINK) $(BASE_LDFLAGS) $(OBJECTS) $(LIBDIRS) $(LIBS) -o $@
+	$(DLINK) $(OBJECTS) $(LDFLAGS) -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CXX) -c $(API_CXXFLAGS) $< -o $@
+	$(CXX) -c $(API_CXXFLAGS) $(LDFLAGS) $< -o $@
