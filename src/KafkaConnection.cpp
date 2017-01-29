@@ -40,7 +40,6 @@
 
 #include <gmsec_version.h>
 
-//#include "rdkafkacpp.h"
 #include <librdkafka/rdkafkacpp.h>
 
 using namespace gmsec::api;
