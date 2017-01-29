@@ -24,7 +24,7 @@ LOCAL_INCS   = -I$(GMSEC_HOME)/include \
 
 CXXFLAGS	+= $(LOCAL_DEFS) $(LOCAL_INCS)
 
-LDFLAGS   += -L$(SUPDIR)/include -lrdkafka++ -lrdkafka -lpthread -lrt -lz
+LDFLAGS   += -L$(SUPDIR)/include -L/usr/local/lib -lrdkafka++ -lrdkafka -lpthread -lrt -lz
 #
 SRCDIR		= src
 
