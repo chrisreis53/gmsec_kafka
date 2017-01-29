@@ -40,8 +40,8 @@
 
 #include <gmsec_version.h>
 
-#include "rdkafkacpp.h"
-//#include <librdkafka/rdkafkacpp.h>
+//#include "rdkafkacpp.h"
+#include <librdkafka/rdkafkacpp.h>
 
 using namespace gmsec::api;
 using namespace gmsec::api::internal;
@@ -68,6 +68,7 @@ void msg_consume(RdKafka::Message* message, void* opaque) {
       if (message->key()) {
         std::cout << "Key: " << *message->key() << std::endl;
       }
+
       printf("%.*s\n",
         static_cast<int>(message->len()),
         static_cast<const char *>(message->payload()));
@@ -284,6 +285,7 @@ void KafkaConnection::mwUnsubscribe(const char *subject)
 
 void KafkaConnection::mwPublish(const Message& message, const Config& config)
 {
+  Message test_message(message);
   std::string topic_str;
 
   topic_str = message.getSubject();
@@ -317,7 +319,9 @@ void KafkaConnection::mwPublish(const Message& message, const Config& config)
     exit(1);
   }
 
-  std::string line = message.toXML();
+  test_message.addField("PRODUCER-NAME", producer->name().c_str());
+  test_message.addField("PRODUCER-NAME-BIN", (GMSEC_BIN) producer->name().c_str(),7);
+  std::string line = test_message.toXML();
   /*
    * Publish Message
    */
