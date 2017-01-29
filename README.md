@@ -1,5 +1,6 @@
 # gmsec_kafka
 
+Download GMSEC_API from SourceForge: [https://sourceforge.net/projects/gmsec/](https://sourceforge.net/projects/gmsec/)
 This readme will be updated as features are added.
 Currently the library has all the required 'hooks' into the GMSEC API, but functionality is coming.
 
