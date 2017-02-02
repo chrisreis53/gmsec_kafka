@@ -29,6 +29,8 @@
 #include <gmsec4/Config.h>
 #include <gmsec4/Message.h>
 
+#include <librdkafka/rdkafkacpp.h>
+
 
 //#include <KafkaMessage.h>
 
@@ -42,10 +44,10 @@ class GMSEC_KAFKA_API KafkaConnection :	public gmsec::api::internal::ConnectionI
 private:
 	bool					mw_test;
 	std::string		mwInfo;
-	std::string 	mw_brokers = "localhost";
+	std::string 	mw_brokers;
   std::string 	mw_errstr;
   std::string 	mw_debug;
-
+	
 public:
 
 	KafkaConnection(const gmsec::api::Config& config);
