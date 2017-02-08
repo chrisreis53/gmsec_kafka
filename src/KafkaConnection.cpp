@@ -115,7 +115,7 @@ std::vector<std::string> list_topics(std::string input_topic){
     std::regex re(input_topic);
     if (regex_match(t,re)) {
       str_vec.push_back(t);
-      std::cout << "Subscribing: " << t << '\n';
+      std::cout << "Found: " << t << '\n';
     }
   }
 
@@ -224,8 +224,11 @@ void KafkaConnection::mwSubscribe(const char* subject, const Config& config)
   std::vector<std::string> topic_vec;
 
   if (topic_str.find("*") != string::npos) {
+    GMSEC_DEBUG << "Found Wildcard in " << topic_str.c_str() << '\n';
     topic_vec = list_topics(topic_str);
-    for (vector<string>::const_iterator i = topic_vec.begin(); i != topic_vec.end(); ++i) {
+    for (std::vector<std::string>::const_iterator i = topic_vec.begin(); i != topic_vec.end(); ++i) {
+      std::string it_str = *i; //ERROR WITH ITERATOR
+      GMSEC_DEBUG << "Subscribing to: " << it_str.c_str() << '\n';
       RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
       RdKafka::Conf *sub_conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
       sub_conf->set("metadata.broker.list", mw_brokers, mw_errstr);
@@ -252,6 +255,7 @@ void KafkaConnection::mwSubscribe(const char* subject, const Config& config)
 
     }
   } else {
+    GMSEC_DEBUG << "No Wildcard" << '\n';
     RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
     RdKafka::Conf *sub_conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
     sub_conf->set("metadata.broker.list", mw_brokers, mw_errstr);
