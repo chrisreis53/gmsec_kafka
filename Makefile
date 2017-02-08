@@ -22,7 +22,7 @@ LOCAL_INCS   = -I$(GMSEC_HOME)/include \
                 -I$(SUPDIR)/include \
                 -I./include \
 
-CXXFLAGS	+= $(LOCAL_DEFS) $(LOCAL_INCS)
+CXXFLAGS	+= -std=gnu++11 $(LOCAL_DEFS) $(LOCAL_INCS)
 
 LDFLAGS   += -L$(SUPDIR)/include -L/usr/local/lib -lrdkafka++ -lrdkafka -lpthread -lrt -lz
 #

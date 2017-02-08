@@ -37,6 +37,7 @@
 #include <cstdio>
 #include <csignal>
 #include <cstring>
+#include <regex>
 
 #include <gmsec_version.h>
 
@@ -94,6 +95,30 @@ void msg_consume(RdKafka::Message* message, void* opaque) {
       std::cerr << "Consume failed: " << message->errstr() << std::endl;
       run = false;
   }
+}
+
+std::vector<std::string> list_topics(std::string input_topic){
+  std::vector<std::string> str_vec;
+  RdKafka::Topic *topic = NULL;
+  class RdKafka::Metadata *metadata;
+
+  /* Fetch metadata */
+  RdKafka::ErrorCode err = producer->metadata(topic!=NULL, topic, &metadata, 5000);
+  if (err != RdKafka::ERR_NO_ERROR) {
+    std::cerr << "%% Failed to acquire metadata: " << RdKafka::err2str(err) << std::endl;
+  }
+
+  std::cout << metadata->topics()->size() << " topics:" << std::endl;
+  RdKafka::Metadata::TopicMetadataIterator it;
+  for (it = metadata->topics()->begin(); it != metadata->topics()->end(); ++it) {
+    std::string t = (*it)->topic();
+    std::regex re(input_topic);
+    if (regex_match(t,re)) {
+      str_vec.push_back(t);
+      std::cout << "Subscribing: " << t << '\n';
+    }
+  }
+
 }
 
 class ExampleDeliveryReportCb : public RdKafka::DeliveryReportCb {
@@ -196,62 +221,63 @@ void KafkaConnection::mwSubscribe(const char* subject, const Config& config)
 	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwSubscribe(" << subject << ')' << '\n';
 
   std::string topic_str = subject;
+  std::vector<std::string> topic_vec;
 
-  RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
+  if (topic_str.find("*") != string::npos) {
+    topic_vec = list_topics(topic_str);
+    for (vector<string>::const_iterator i = topic_vec.begin(); i != topic_vec.end(); ++i) {
+      RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
+      RdKafka::Conf *sub_conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+      sub_conf->set("metadata.broker.list", mw_brokers, mw_errstr);
+      RdKafka::Consumer *t_consumer = RdKafka::Consumer::create(sub_conf, mw_errstr);
+      /*
+       * Create topic handle.
+       */
+      RdKafka::Topic *topic = RdKafka::Topic::create(t_consumer, *i, tconf, mw_errstr);
+      if (!topic) {
+        std::cerr << "Failed to create topic: " << mw_errstr << std::endl;
+        exit(1);
+      }
+      /*
+       * Start consumer for topic+partition at start offset
+       */
+      int32_t partition = 0;
+      int64_t start_offset = RdKafka::Topic::OFFSET_BEGINNING;
+      RdKafka::ErrorCode resp = t_consumer->start(topic, partition, start_offset, rkqu);
+      if (resp != RdKafka::ERR_NO_ERROR) {
+        std::cerr << "Failed to start consumer: " <<
+        RdKafka::err2str(resp) << std::endl;
+        exit(1);
+      }
 
-  RdKafka::Conf *sub_conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
-  sub_conf->set("metadata.broker.list", mw_brokers, mw_errstr);
+    }
+  } else {
+    RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
+    RdKafka::Conf *sub_conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+    sub_conf->set("metadata.broker.list", mw_brokers, mw_errstr);
+    RdKafka::Consumer *t_consumer = RdKafka::Consumer::create(sub_conf, mw_errstr);
+    /*
+     * Create topic handle.
+     */
+    RdKafka::Topic *topic = RdKafka::Topic::create(t_consumer, topic_str, tconf, mw_errstr);
+    if (!topic) {
+      std::cerr << "Failed to create topic: " << mw_errstr << std::endl;
+      exit(1);
+    }
+    /*
+     * Start consumer for topic+partition at start offset
+     */
+    int32_t partition = 0;
+    int64_t start_offset = RdKafka::Topic::OFFSET_BEGINNING;
+    RdKafka::ErrorCode resp = t_consumer->start(topic, partition, start_offset, rkqu);
+    if (resp != RdKafka::ERR_NO_ERROR) {
+      std::cerr << "Failed to start consumer: " <<
+      RdKafka::err2str(resp) << std::endl;
+      exit(1);
+    }
 
-  RdKafka::Consumer *t_consumer = RdKafka::Consumer::create(sub_conf, mw_errstr);
-
-  /*
-   * Create topic handle.
-   */
-  RdKafka::Topic *topic = RdKafka::Topic::create(t_consumer, topic_str, tconf, mw_errstr);
-  if (!topic) {
-    std::cerr << "Failed to create topic: " << mw_errstr << std::endl;
-    exit(1);
   }
 
-  /*
-   * Start consumer for topic+partition at start offset
-   */
-  int32_t partition = 0;
-  int64_t start_offset = RdKafka::Topic::OFFSET_BEGINNING;
-  RdKafka::ErrorCode resp = t_consumer->start(topic, partition, start_offset, rkqu);
-  GMSEC_DEBUG << "TEST" << '\n';
-  if (resp != RdKafka::ERR_NO_ERROR) {
-    std::cerr << "Failed to start consumer: " <<
-    RdKafka::err2str(resp) << std::endl;
-    exit(1);
-  }
-
-  // ExampleConsumeCb ex_consume_cb;
-  //
-  // /*
-  //  * Consume messages
-  //  */
-  // while (run) {
-  //   if (use_ccb) {
-  //     consumer->consume_callback(topic, partition, 1000,
-  //                                &ex_consume_cb, &use_ccb);
-  //   } else {
-  //     RdKafka::Message *msg = consumer->consume(topic, partition, 1000);
-  //     msg_consume(msg, NULL);
-  //     delete msg;
-  //   }
-  //   consumer->poll(0);
-  // }
-
-  /*
-   * Stop consumer
-   */
-  // consumer->stop(topic, partition);
-  //
-  // consumer->poll(1000);
-  //
-  // delete topic;
-  // delete consumer;
 }
 
 void KafkaConnection::mwUnsubscribe(const char *subject)
@@ -310,8 +336,17 @@ void KafkaConnection::mwReceive(Message*& message, GMSEC_I32 timeout)
 {
 	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwReceive";
 
+  message = NULL;
+
   RdKafka::Message *msg = consumer->consume(rkqu, (int)timeout);
-  msg_consume(msg, NULL);
+
+  GMSEC_DEBUG << '\n' << static_cast<const char *>(msg->payload())<< '\n';
+
+  Message recv_msg(static_cast<const char *>(msg->payload()));
+
+  //Message recv_msg =static_cast<const char *>(msg->payload())
+
+  //msg_consume(msg, NULL);
   delete msg;
 
 }
