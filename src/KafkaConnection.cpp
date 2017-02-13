@@ -330,10 +330,10 @@ void KafkaConnection::mwPublish(const Message& message, const Config& config)
      producer->poll(0);
    }
 
-   while (run && producer->outq_len() > 0) {
-     std::cerr << "Waiting for " << producer->outq_len() << std::endl;
-     producer->poll(250);
-   }
+  //  while (run && producer->outq_len() > 0) {
+  //    std::cerr << "Waiting for " << producer->outq_len() << std::endl;
+  //    producer->poll(250);
+  //  }
 
 	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::Publish(things)" << '\n' << message.toXML() ;
 }
@@ -351,7 +351,7 @@ void KafkaConnection::mwReply(const Message& request, const Message& reply)
 void KafkaConnection::mwReceive(Message*& message, GMSEC_I32 timeout)
 {
 	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwReceive";
-
+  static std::string MSG_END = "</MESSAGE>";
   message = NULL;
 
   RdKafka::Message *msg = consumer->consume(rkqu, (int)timeout);
@@ -360,8 +360,13 @@ void KafkaConnection::mwReceive(Message*& message, GMSEC_I32 timeout)
   if(msg_str.find("Broker:") != string::npos) {
     GMSEC_INFO << msg_str.c_str();
   } else {
-    GMSEC_INFO << '\n' << msg_str.c_str();
-    message = new Message(msg_str.c_str());
+    //Error Checking
+    std::size_t found = msg_str.find(MSG_END);
+    if((found + MSG_END.length()) != msg_str.length()) {
+      GMSEC_DEBUG << "We have issues:" << msg_str.substr(found.c_str());
+    } else {
+      message = new Message(msg_str.c_str());
+    }
   }
 
   //msg_consume(msg, NULL);
