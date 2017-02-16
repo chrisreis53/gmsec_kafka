@@ -330,10 +330,10 @@ void KafkaConnection::mwPublish(const Message& message, const Config& config)
      producer->poll(0);
    }
 
-   while (run && producer->outq_len() > 0) {
-     std::cerr << "Waiting for " << producer->outq_len() << std::endl;
-     producer->poll(250);
-   }
+  //  while (run && producer->outq_len() > 0) {
+  //    std::cerr << "Waiting for " << producer->outq_len() << std::endl;
+  //    producer->poll(250);
+  //  }
 
 	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::Publish(things)" << '\n' << message.toXML() ;
 }
