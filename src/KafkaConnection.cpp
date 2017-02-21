@@ -153,8 +153,6 @@ KafkaConnection::KafkaConnection(const Config& config)
   mw_errstr(""),
   mw_debug("")
 {
-	GMSEC_DEBUG << "Connection test" << '\n';
-
   GMSEC_INFO << '\n' << config.toXML() << '\n';
   if(config.getValue("server") != NULL){
     mw_brokers = config.getValue("server");
