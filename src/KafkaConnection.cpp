@@ -60,6 +60,11 @@ static void sigterm (int sig) {
   run = false;
 }
 
+const char msg_clean(){
+  //TODO clean messages to prevent program crashes
+  return std::string("Test");
+}
+
 void msg_consume(RdKafka::Message* message, void* opaque) {
   switch (message->err()) {
     case RdKafka::ERR__TIMED_OUT:
