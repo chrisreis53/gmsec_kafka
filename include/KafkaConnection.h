@@ -47,7 +47,9 @@ private:
 	std::string 	mw_brokers;
   std::string 	mw_errstr;
   std::string 	mw_debug;
-	
+	int           uniquecounter;
+	int						requestCounter;
+
 public:
 
 	KafkaConnection(const gmsec::api::Config& config);
@@ -60,6 +62,8 @@ public:
 	{
 		return "gmsec_kafka";
 	}
+
+	std::string generateUniqueId(long id);
 
 	virtual const char* getMWInfo();
 
