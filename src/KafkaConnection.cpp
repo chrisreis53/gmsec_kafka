@@ -381,7 +381,19 @@ void KafkaConnection::mwRequest(const Message& request, std::string& id)
 
 void KafkaConnection::mwReply(const Message& request, const Message& reply)
 {
-	GMSEC_DEBUG << "gmsec_kafka:KafkaConnection::mwReply(request=" << ", reply=" << ')';
+  const StringField* uniqueID  = dynamic_cast<const StringField*>(request.getField(REPLY_UNIQUE_ID_FIELD));
+
+  if (uniqueID == NULL)
+	{
+		throw Exception(CONNECTION_ERROR, INVALID_MSG, "Request does not contain unique ID field");
+	}
+
+  MessageBuddy::getInternal(reply).addField(REPLY_UNIQUE_ID_FIELD, uniqueID->getValue());
+
+  // Publish the reply
+	mwPublish(reply, getExternal().getConfig());
+
+	GMSEC_DEBUG << "[Reply sent successfully: " << reply.getSubject() << "]";
 }
 
 void KafkaConnection::mwReceive(Message*& message, GMSEC_I32 timeout)
