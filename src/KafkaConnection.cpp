@@ -64,9 +64,20 @@ static void sigterm (int sig) {
   run = false;
 }
 
-const char* msg_clean(){
+const char* msgClean(std::string msg_str){
   //TODO clean messages to prevent program crashes
-  return std::string("Test").c_str();
+  std::string end = "</MESSAGE>";
+  if(msg_str.compare(msg_str.length() - end.length(), end.length(), end) == 0){
+    GMSEC_DEBUG << "Message did not have to be Cleaned!" << '\n';
+    return msg_str.c_str();
+  } else {
+    GMSEC_DEBUG << "Message had to be Cleaned" << '\n';
+    while(msg_str.compare(msg_str.length() - end.length(), end.length(), end) != 0){
+      msg_str.pop_back();
+      GMSEC_DEBUG << "Cleaning:\n" << msg_str.c_str() << '\n';
+    }
+    return msg_str.c_str();
+  }
 }
 
 void msg_consume(RdKafka::Message* message, void* opaque) {
@@ -406,10 +417,10 @@ void KafkaConnection::mwReceive(Message*& message, GMSEC_I32 timeout)
   std::string msg_str = static_cast<const char *>(msg->payload());
 
   if(msg_str.find("Broker:") != string::npos) {
-    GMSEC_INFO << msg_str.c_str();
+    //GMSEC_INFO << msg_str.c_str();
   } else {
     GMSEC_DEBUG << '\n' << msg_str.c_str();
-    message = new Message(msg_str.c_str());
+    message = new Message(msgClean(msg_str));
   }
 
   //msg_consume(msg, NULL);
