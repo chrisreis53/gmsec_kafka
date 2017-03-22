@@ -12,7 +12,7 @@ Configure GMSEC According to Goddard provided documentation.
 
 git clone gmsec_kafka into the wrapper directory (or better yet, create a symbolic link)
 ```
-git clone https://github.com/chrisreis53/gmsec_kafka.git /path/to/GMSEC_API-4.2
+git clone https://github.com/chrisreis53/gmsec_kafka.git /path/to/GMSEC_API-4.2/wrapper
 ```
 
 rename from "gmsec_kafka" to "kafka"
@@ -28,7 +28,7 @@ export MW_WRAPPERS="kafka"
 
 Make the library either independently by running make in the kafka folder:
 ```
-make
+make -C ~/GMSEC_API-4.2/wrapper/kafka
 ```
 
 Or make the whole GMSEC-API library:
