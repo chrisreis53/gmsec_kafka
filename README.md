@@ -23,6 +23,7 @@ mv gmsec_kafka kafka
 set environment variables
 ```
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+export MW_WRAPPERS="kafka"
 ```
 
 Make the library either independently by running make in the kafka folder:
